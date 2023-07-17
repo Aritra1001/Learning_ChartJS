@@ -3,83 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./index.css"/>
     <title>chart.js</title>
   </head>
   <body>
     <canvas id="graph" aria-label="chart"></canvas>
+    <div class="doughnut-container">
+      <canvas id="doughnut" aria-label="chart" ></canvas>
+    </div>
+
+    <div class="line-container">
+      <canvas id="line" aria-label="chart" height="100" width="100"></canvas>
+    </div>
+
+    <div class="radial-container">
+      <canvas id="radialBar" aria-label="chart"></canvas>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.1/chart.min.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.1/helpers.esm.min.js"></script> -->
-    <script>
-      var chart = document.getElementById("graph").getContext("2d");
-      var graph = new Chart(chart, {
-        type: "bar",
-        data: {
-          labels: ["HTML", "CSS", "JAVASCRIPT", "JQUERY", "BOOTSTRAP"],
-          datasets: [
-            {
-              label: "Online Tutorial Subjects",
-              data: [9, 8, 10, 6, 12],
-              backgroundColor: ["yellow", "aqua", "pink", "red", "green"],
-              borderColor: ["red", "blue", "fuchsia", "black", "black"],
-              borderWidth: 2,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          layout: {
-            padding: {
-              left: 40,
-              right: 40,
-            },
-          },
-          plugins: {
-            title: {
-              display: true,
-              text: "Web Technologies",
-              color: "blue",
-              font: {
-                size: 30,
-                // weigth: 'bold'
-              },
-              fullSize: true,
-            },
-            legend: {
-              display: true,
-              position: "bottom",
-              // align: 'center',
-              labels: {
-                font: {
-                  weight: "bold",
-                  size: 15,
-                  family: "Helvetica",
-                },
-              },
-            },
-          },
-          animations: {
-            tension: {
-              duration: 750,
-            //   delay: 500,
-              easing: "linear",
-              from: 1,
-              to: 0,
-              loop: true,
-            },
-          },
-          scales: {
-            y: {
-              min: 0,
-              max: 20,
-            },
-          },
-          events: ["click"],
-          interaction: {
-            mode: "nearest",
-          },
-        },
-      });
-    </script>
+    <script src="./script.js"></script>
   </body>
 </html>
