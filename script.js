@@ -134,81 +134,187 @@ let graph3 = new Chart(line, {
 });
 
 // For radial bar chart
-// let dataset1 = {
-//   label: "Offline sales",
-//   data: [12],
-//   backgroundColor: ["salmon"],
-//   borderColor: ["white"],
-//   borderWidth: 5,
-//   borderRadius: 10,
-//   circumference: (e)=>{
-//     console.log(e);
-//     console.log(e.dataset.data[0]);
-//     return e.dataset.data[0] / 12 * 270;
-//   }
-// };
-
-// let dataset2 = {
-//   label: "Online sales",
-//   data: [9],
-//   backgroundColor: ["lightblue"],
-//   borderColor: ["white"],
-//   borderRadius: 10,
-//   borderWidth: 5,
-//   circumference: (ctx)=>{
-//     console.log(ctx);
-//     console.log(ctx.dataset.data[0]);
-//     return ctx.dataset.data[0] / 12 * 270;
-//   }
-// };
-
-// let dataset3 = {
-//   label: "Returns",
-//   data: [6],
-//   backgroundColor: ["lightgreen"],
-//   borderColor: ["white"],
-//   borderRadius: 10,
-//   borderWidth: 5,
-//   circumference: (ctx)=>{
-//     console.log(ctx.dataset.data[0]);
-//     return ctx.dataset.data[0] / 12 * 270;
-//   }
-// };
-
-// let data = {
-//   labels: ["Offline sales", "Online sales", "Returns"],
-//   datasets: [dataset1,dataset2,dataset3]
-// };
-
-let radialBarChart = document.getElementById("radialBar");
-let graph4 = new Chart(radialBarChart, {
-  type: "doughnut",
-  data:{
-    labels: ['OnlineSales', 'OfflineSales', 'Returns'],
-    datasets:[
+const data1 = {
+  // labels: ["Online Sales", "Offline Sales", "Returns"],
+  datasets: [
     {
-       label: 'OnlineSales',
-       data: [12],
-       backgroundColor: ['red'],
-       
+      label: "Online Sales",
+      data: [18],
+      backgroundColor: ["rgba(255, 26, 104, 0.2)"],
+      borderColor: ["rgba(255, 26, 104, 1)"],
+      borderWidth: 1,
+      borderRadius: 10,
+      circumference: (ctx)=>{
+        return ctx.dataset.data[0] / 18 * 270
+      }
     },
     {
-      label: 'OfflineSales',
-      data: [9],
-      backgroundColor: ['blue']
+      label: "Offline Sales",
+      data: [12],
+      backgroundColor: ["rgba(54, 162, 235, 0.2)"],
+      borderColor: ["rgba(54, 162, 235, 1)"],
+      borderWidth: 1,
+      borderRadius: 10,
+      circumference: (ctx)=>{
+        return ctx.dataset.data[0] / 18 * 270
+      }
     },
     {
-      label: 'Returns',
+      label: "Returns",
       data: [6],
-      backgroundColor: ['green']
-    }
-    // {
-    //   data:[12,9,6],
-    //   backgroundColor:['red', 'green', 'blue']
-    // }
-  ]
+      backgroundColor: ["rgba(255, 206, 86, 0.2)"],
+      borderColor: ["rgba(255, 206, 86, 1)"],
+      borderWidth: 1,
+      borderRadius: 10,
+      circumference: (ctx)=>{
+        return ctx.dataset.data[0] / 18 * 270
+      }
+    },
+  ],
+};
+
+// config
+const config1 = {
+  type: "doughnut",
+  data: data1,
+  options: {
+    plugins:{
+      legend:{
+        onClick: (evt, legendItem, legend)=>{
+          // console.log("evt", evt);
+          // console.log( legendItem.text);
+          console.log("legend", legend);
+          const datasets = legend.legendItems.map((dataset, index)=>{
+            return dataset.text;
+          })
+          console.log("datasets", datasets);
+          const index = datasets.indexOf(legendItem.text);
+          console.log("index", index);
+
+          if(legend.chart.isDatasetVisible(index) === true){
+            legend.chart.hide(index);
+          }else{
+            legend.chart.show(index);
+          }
+        },
+        labels:{
+          generateLabels: (chart1)=>{
+            let visibility = [];
+            for(let i = 0; i < chart1.data.datasets.length; i++){
+              if(chart1.isDatasetVisible(i) === false){
+                visibility.push(true);
+              }else{
+                visibility.push(false);
+              }
+            }
+
+            console.log("chart1", chart1);
+            return chart1.data.datasets.map(
+              (dataset, index)=>({
+                text: dataset.label,
+                fillStyle: dataset.backgroundColor,
+                strokeStyle: dataset.borderColor,
+                fontColor: dataset.borderColor,
+                hidden: visibility[index]
+            })
+            )
+          }
+        }
+      }
+    },
+    // scales: {
+    //   y: {
+    //     beginAtZero: true,
+    //   },
+    // },
   },
-  options:{
-    responsive: true,
-  }
-});
+};
+
+const graph4 = new Chart(document.getElementById("radialBar"), config1);
+
+// setup for line chart with multiple datasets
+const data = {
+  labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+  datasets: [
+    {
+      label: "Weekly Sales",
+      data: [20, 15, 9, 10, 18, 6, 11],
+      backgroundColor: ["rgba(255, 26, 104, 0.2)"],
+      borderColor: ["rgba(255, 26, 104, 1)"],
+      borderWidth: 1,
+    },
+    {
+      label: "Yearly Sales",
+      data: [18, 12, 6, 9, 12, 3, 9],
+      backgroundColor: ["rgba(54, 162, 235, 0.2)"],
+      borderColor: ["rgba(54, 162, 235, 1)"],
+      borderWidth: 1,
+    },
+    {
+      label: "Daily Sales",
+      data: [15, 12, 25, 14, 5, 7, 12],
+      backgroundColor: ["rgba(255, 206, 86, 0.2)"],
+      borderColor: ["rgba(255, 206, 86, 1)"],
+      borderWidth: 1,
+    },
+  ],
+};
+
+// config
+const config = {
+  type: "line",
+  data,
+  options: {
+    tension: 0.4,
+    plugins: {
+      legend: {
+        onClick: (evt, legendItem, legend) => {
+          // console.log("evt", evt);
+          // console.log(legendItem.text);
+          console.log("legend", legend);
+          const datasets = legend.legendItems.map((dataset, index) => {
+            return dataset.text;
+          });
+          console.log("datasets", datasets);
+          const index = datasets.indexOf(legendItem.text);
+          console.log("index", index);
+
+          if (legend.chart.isDatasetVisible(index) === true) {
+            legend.chart.hide(index);
+          } else {
+            legend.chart.show(index);
+          }
+        },
+        labels: {
+          generateLabels: (chart) => {
+            let visibility = [];
+            for (let i = 0; i < chart.data.datasets.length; i++) {
+              if (chart.isDatasetVisible(i) === false) {
+                visibility.push(true);
+              } else {
+                visibility.push(false);
+              }
+            }
+            console.log("chart", chart);
+            return chart.data.datasets.map((dataset, index) => ({
+              text: dataset.label,
+              fillStyle: dataset.backgroundColor,
+              strokeStyle: dataset.borderColor,
+              fontColor: dataset.borderColor,
+              hidden: visibility[index],
+            }));
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        min: 0,
+        max: 30,
+      },
+    },
+  },
+};
+
+const myChart = new Chart(document.getElementById("myChart"), config);
