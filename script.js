@@ -81,6 +81,20 @@ var graph = new Chart(chart, {
 // For doughnut chart
 
 let doughnut = document.querySelector("#doughnut");
+const doughnutLabel = {
+  // id: 'doughnutLabel',
+  beforeDatasetsDraw(chart, args, pluginOptions){
+    const {ctx, data} = chart;
+    ctx.save();
+    const xCoor = chart.getDatasetMeta(0).data[0].x;
+    const yCoor = chart.getDatasetMeta(0).data[0].y;
+    ctx.fillStyle = 'black';
+    ctx.textAlign = "center";
+    ctx.baseLine = "middle";
+    ctx.font = "bold 30px sans-serif"
+    ctx.fillText('text', xCoor, yCoor);
+  }
+}
 let graph2 = new Chart(doughnut, {
   type: "doughnut",
   data: {
@@ -92,11 +106,46 @@ let graph2 = new Chart(doughnut, {
         backgroundColor: ["yellow", "blue", "red", "pink", "purple"],
       },
     ],
+    // borderDisplay: false
+
+    // borderDash: [],
+    // borderStyle: "dash",
+    // line: { borderWidth: 1 },
   },
   options: {
     repsonsive: false,
+    cutout: '80%',
+    radius: '100%',
+    borderWidth: 0,
+    // rotation: 80,
+    // borderRadius: 10,
+    plugins: { 
+      legend: {
+        labels: {
+          usePointStyle: true, //Changes the shape of the legend to circle
+          boxWidth: 10, //Changes the size of the legend
+        },
+      },
+    },
   },
+  plugins:[doughnutLabel]
 });
+// Chart.pluginService.register({
+//   beforeDraw: function(chart) {
+//     var width = chart.chart.width,
+//         height = chart.chart.height,
+//         ctx = chart.chart.ctx;
+//     ctx.restore();
+//     var fontSize = (height / 114).toFixed(2);
+//     ctx.font = fontSize + "em sans-serif";
+//     ctx.textBaseline = "middle";
+//     var text = "75%",
+//         textX = Math.round((width - ctx.measureText(text).width) / 2),
+//         textY = height / 2;
+//     ctx.fillText(text, textX, textY);
+//     ctx.save();
+//   }
+// });
 
 // For line chart
 
@@ -144,9 +193,9 @@ const data1 = {
       borderColor: ["rgba(255, 26, 104, 1)"],
       borderWidth: 1,
       borderRadius: 10,
-      circumference: (ctx)=>{
-        return ctx.dataset.data[0] / 18 * 270
-      }
+      circumference: (ctx) => {
+        return (ctx.dataset.data[0] / 18) * 270;
+      },
     },
     {
       label: "Offline Sales",
@@ -155,9 +204,10 @@ const data1 = {
       borderColor: ["rgba(54, 162, 235, 1)"],
       borderWidth: 1,
       borderRadius: 10,
-      circumference: (ctx)=>{
-        return ctx.dataset.data[0] / 18 * 270
-      }
+      rotation: 60,
+      circumference: (ctx) => {
+        return (ctx.dataset.data[0] / 18) * 270;
+      },
     },
     {
       label: "Returns",
@@ -166,9 +216,10 @@ const data1 = {
       borderColor: ["rgba(255, 206, 86, 1)"],
       borderWidth: 1,
       borderRadius: 10,
-      circumference: (ctx)=>{
-        return ctx.dataset.data[0] / 18 * 270
-      }
+      rotation: 100,
+      circumference: (ctx) => {
+        return (ctx.dataset.data[0] / 18) * 270;
+      },
     },
   ],
 };
@@ -178,49 +229,49 @@ const config1 = {
   type: "doughnut",
   data: data1,
   options: {
-    plugins:{
-      legend:{
-        onClick: (evt, legendItem, legend)=>{
+    // cutout: '80%',
+    rotation: 30,
+    plugins: {
+      legend: {
+        onClick: (evt, legendItem, legend) => {
           // console.log("evt", evt);
           // console.log( legendItem.text);
           console.log("legend", legend);
-          const datasets = legend.legendItems.map((dataset, index)=>{
+          const datasets = legend.legendItems.map((dataset, index) => {
             return dataset.text;
-          })
+          });
           console.log("datasets", datasets);
           const index = datasets.indexOf(legendItem.text);
           console.log("index", index);
 
-          if(legend.chart.isDatasetVisible(index) === true){
+          if (legend.chart.isDatasetVisible(index) === true) {
             legend.chart.hide(index);
-          }else{
+          } else {
             legend.chart.show(index);
           }
         },
-        labels:{
-          generateLabels: (chart1)=>{
+        labels: {
+          generateLabels: (chart1) => {
             let visibility = [];
-            for(let i = 0; i < chart1.data.datasets.length; i++){
-              if(chart1.isDatasetVisible(i) === false){
+            for (let i = 0; i < chart1.data.datasets.length; i++) {
+              if (chart1.isDatasetVisible(i) === false) {
                 visibility.push(true);
-              }else{
+              } else {
                 visibility.push(false);
               }
             }
 
             console.log("chart1", chart1);
-            return chart1.data.datasets.map(
-              (dataset, index)=>({
-                text: dataset.label,
-                fillStyle: dataset.backgroundColor,
-                strokeStyle: dataset.borderColor,
-                fontColor: dataset.borderColor,
-                hidden: visibility[index]
-            })
-            )
-          }
-        }
-      }
+            return chart1.data.datasets.map((dataset, index) => ({
+              text: dataset.label,
+              fillStyle: dataset.backgroundColor,
+              strokeStyle: dataset.borderColor,
+              fontColor: dataset.borderColor,
+              hidden: visibility[index],
+            }));
+          },
+        },
+      },
     },
     // scales: {
     //   y: {
@@ -268,6 +319,7 @@ const config = {
     tension: 0.4,
     plugins: {
       legend: {
+        // marginRight: 0,
         onClick: (evt, legendItem, legend) => {
           // console.log("evt", evt);
           // console.log(legendItem.text);
@@ -318,3 +370,5 @@ const config = {
 };
 
 const myChart = new Chart(document.getElementById("myChart"), config);
+
+// Vertical progress bar chart
