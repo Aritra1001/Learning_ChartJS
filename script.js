@@ -121,7 +121,10 @@ let graph2 = new Chart(doughnut, {
     // borderRadius: 10,
     plugins: { 
       legend: {
+        // color: 'red',
         labels: {
+          // position: 'bottom',
+          // align: 'end',
           usePointStyle: true, //Changes the shape of the legend to circle
           boxWidth: 10, //Changes the size of the legend
         },
@@ -233,6 +236,9 @@ const config1 = {
     rotation: 30,
     plugins: {
       legend: {
+        // maxHeight: 20,
+        position: 'bottom',
+        // align: 'end',
         onClick: (evt, legendItem, legend) => {
           // console.log("evt", evt);
           // console.log( legendItem.text);
@@ -251,6 +257,10 @@ const config1 = {
           }
         },
         labels: {
+          font:{
+            weight: 'bold',
+            size:'15px'
+          },
           generateLabels: (chart1) => {
             let visibility = [];
             for (let i = 0; i < chart1.data.datasets.length; i++) {
@@ -311,6 +321,34 @@ const data = {
   ],
 };
 
+const legendMargin = {
+  id: 'legendMargin',
+  beforeInit(chart, legend, options){
+    console.log("fit",chart.legend.fit);
+    const fitValue = chart.legend.fit;
+    chart.legend.fit = function fit(){
+      fitValue.bind(chart.legend)();
+        return this.height += 100;
+    }
+    // chart.legend.fit = function fit(){
+    //   fitValue.bind(chart.legend)();
+    //   return this.left += 150;
+    // }
+  }
+}
+
+// const inBetweenLegendMargin = {
+//   id: 'inBetweenLegendMargin',
+//   beforeDatasetsDraw: (chart, args, options)=>{
+//     console.log("chart_legend", chart);
+//     // const margin = chart.legend._margins;
+//     // console.log("margin", margin);
+//     // margin.left = 0;
+//     // margin.right = 0;
+
+//   }
+// }
+
 // config
 const config = {
   type: "line",
@@ -319,7 +357,7 @@ const config = {
     tension: 0.4,
     plugins: {
       legend: {
-        // marginRight: 0,
+        // maxWidth: 1000,
         onClick: (evt, legendItem, legend) => {
           // console.log("evt", evt);
           // console.log(legendItem.text);
@@ -338,6 +376,7 @@ const config = {
           }
         },
         labels: {
+          // padding: 30,
           generateLabels: (chart) => {
             let visibility = [];
             for (let i = 0; i < chart.data.datasets.length; i++) {
@@ -367,6 +406,7 @@ const config = {
       },
     },
   },
+  plugins: [legendMargin]
 };
 
 const myChart = new Chart(document.getElementById("myChart"), config);
